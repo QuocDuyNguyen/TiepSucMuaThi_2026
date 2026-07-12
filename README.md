@@ -210,9 +210,6 @@ npm run dev
 GitHub:
 https://github.com/QuocDuyNguyen
 
-LinkedIn:
-https://linkedin.com/in/your-linkedin
-
 ---
 
 ## License
