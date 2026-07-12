@@ -18,13 +18,10 @@ Swagger UI: http://localhost:8080/swagger-ui/index.html
 ** Tài Khoản Test Chức Năng
 
 Role Admin
-Name: admin
-Password: admin123
+Name: admin        Password: admin123
 
 Role User
-Name: volunteer
-Password volunteer123
----
+Name: volunteer   PassWord: volunteer123
 
 ## Tech Stack
 
