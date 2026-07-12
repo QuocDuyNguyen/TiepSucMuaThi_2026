@@ -13,7 +13,7 @@ Frontend: http://localhost:5173
 
 Backend API: http://localhost:8080
 
-Swagger UI: http://localhost:8080/swagger-ui/index.html (Nếu có cài đặt)
+Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ---
 
