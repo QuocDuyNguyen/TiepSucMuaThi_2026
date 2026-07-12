@@ -4,7 +4,10 @@
 
 ---
 
-## Demo
+## Demo 
+Sẽ được deploy lên Vertical và Railway sau
+
+Các link local host khi chạy Pj
 
 Frontend: http://localhost:5173
 
