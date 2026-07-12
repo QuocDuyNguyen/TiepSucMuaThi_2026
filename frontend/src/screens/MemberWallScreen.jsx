@@ -2,25 +2,49 @@ import React from 'react';
 import { volunteers } from '../data/volunteers.js';
 
 export default function MemberWallScreen({ onNavigate, onSelectMemberId }) {
+  const [volunteersList, setVolunteersList] = React.useState([]);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedDept, setSelectedDept] = React.useState('Tất cả');
-
-  const filteredVolunteers = volunteers.filter((v) => {
-    const matchesSearch = v.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          v.role.toLowerCase().includes(searchQuery.toLowerCase());
+  const [loading, setLoading] = React.useState(true);
     
     // Department mapping logic
+   React.useEffect(() => {
+    fetch(`http://localhost:8080/api/volunteers?t=${Date.now()}`)
+    .then((res)=> {
+      if(!res.ok) throw new Error('Không thể tải danh sach chiến sĩ.');
+      return res.json();
+    })
+    .then((data) => {
+      setVolunteersList(data);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error('Lỗi API lấy thành viên:', err);
+      setLoading(false);
+    });
+  }, []);
+    const filteredVolunteers = volunteersList.filter((v) => {
+    const nameToSearch = v.fullName || '';
+    const roleToSearch = v.roleName || '';
+    const matchesSearch = nameToSearch.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          roleToSearch.toLowerCase().includes(searchQuery.toLowerCase());
+  
     let matchesDept = false;
+    const roleLower = roleToSearch.toLowerCase();
+    
     if (selectedDept === 'Tất cả') {
       matchesDept = true;
     } else if (selectedDept === 'Đội Hậu cần') {
-      matchesDept = v.dept === 'Đội Hậu cần';
+      matchesDept = roleLower.includes('hậu cần');
     } else if (selectedDept === 'Đội Truyền thông') {
-      matchesDept = v.dept === 'Đội Truyền thông';
+      matchesDept = roleLower.includes('truyền thông');
     } else if (selectedDept === 'Đội Điều phối') {
-      matchesDept = v.dept === 'Đội Điều phối' || v.dept === 'Đội Tiếp sức' || v.dept === 'Đội Kỹ thuật';
+      matchesDept = roleLower.includes('điều phối') || 
+                    roleLower.includes('tiếp sức') || 
+                    roleLower.includes('kỹ thuật') || 
+                    roleLower.includes('trưởng ban') || 
+                    roleLower.includes('tổng chỉ huy');
     }
-
     return matchesSearch && matchesDept;
   });
 
@@ -108,15 +132,15 @@ export default function MemberWallScreen({ onNavigate, onSelectMemberId }) {
               <div className="aspect-square rounded-2xl overflow-hidden mb-4 relative">
                 <img
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  alt={vol.name}
-                  src={vol.image}
+                  alt={vol.fullName}
+                  src={vol.avatarUrl || 'https://res.cloudinary.com/demo/image/upload/d_avatar.png/avatar.png'}
                 />
                 <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <span className="material-symbols-outlined text-white text-4xl bg-primary/80 p-3 rounded-full shadow-lg">visibility</span>
                 </div>
               </div>
-              <h3 className="font-headline-md text-lg font-bold text-on-surface mb-1">{vol.name}</h3>
-              <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{vol.role}</p>
+              <h3 className="font-headline-md text-lg font-bold text-on-surface mb-1">{vol.fullName}</h3>
+              <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{vol.roleName}</p>
             </div>
           ))}
         </div>

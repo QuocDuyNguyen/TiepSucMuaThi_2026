@@ -2,6 +2,33 @@ import React from 'react';
 
 export default function HomeScreen({ onNavigate, onSelectMemberId }) {
   const [hearts, setHearts] = React.useState([]);
+  const [featuredVolunteers, setFeaturedVolunteers] = React.useState([]);
+  const [moments, setMoments] = React.useState([]);
+  const [gratitudes, setGratitudes] = React.useState([]);
+  const [settings, setSettings] = React.useState(null);
+  const [isVideoOpen, setIsVideoOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch(`http://localhost:8080/api/volunteers?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setFeaturedVolunteers(data.filter(v => v.featured)))
+      .catch(err => console.error('Error fetching volunteers:', err));
+
+    fetch(`http://localhost:8080/api/gallery?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setMoments(data))
+      .catch(err => console.error('Error fetching gallery:', err));
+
+    fetch(`http://localhost:8080/api/gratitudes?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setGratitudes(data.filter(g => g.approved)))
+      .catch(err => console.error('Error fetching gratitudes:', err));
+
+    fetch(`http://localhost:8080/api/settings?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setSettings(data))
+      .catch(err => console.error('Error fetching settings:', err));
+  }, []);
 
   // Generate floating hearts for the Closing section
   React.useEffect(() => {
@@ -84,16 +111,16 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
           <img
             className="w-full h-full object-cover"
             alt="A large, emotional group of diverse young volunteers in blue uniforms cheering and laughing together"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9D80ETRjuk8C-DlhTMq7YqgX_Phe6R6CiCGtKgH0GM5f0sB9xx67-yrG5_ejjCAaCeEAY0wcSTJA4q0vX1rPyPxfe0CO1rEGRubjd3H_y9Qz32uwPcEXinxju2eQV6b4Ni1MOyXu1SHoz_8q8wMdXb6bfyXPrkKA12Bs9Tup7wfotn7QA5RXvWinJPfQT72YHSJU1wMUpm4ndJrZFiR695wVXcMoMZRQM8Hs2KnNP-F8kxuUB4s25"
+            src={settings?.heroBackground || "https://lh3.googleusercontent.com/aida-public/AB6AXuC9D80ETRjuk8C-DlhTMq7YqgX_Phe6R6CiCGtKgH0GM5f0sB9xx67-yrG5_ejjCAaCeEAY0wcSTJA4q0vX1rPyPxfe0CO1rEGRubjd3H_y9Qz32uwPcEXinxju2eQV6b4Ni1MOyXu1SHoz_8q8wMdXb6bfyXPrkKA12Bs9Tup7wfotn7QA5RXvWinJPfQT72YHSJU1wMUpm4ndJrZFiR695wVXcMoMZRQM8Hs2KnNP-F8kxuUB4s25"}
           />
           <div className="absolute inset-0 hero-gradient"></div>
         </div>
         <div className="relative z-10 text-center text-white px-margin-mobile max-w-4xl">
           <h1 className="font-display-lg text-4xl md:text-6xl lg:text-[64px] font-extrabold mb-6 leading-tight drop-shadow-2xl">
-            DẤU ÁN TIẾP SỨC 2026
+            {settings?.heroTitle || "DẤU ÁN TIẾP SỨC 2026"}
           </h1>
           <p className="font-headline-md text-xl md:text-2xl font-normal mb-10 opacity-90 drop-shadow-md">
-            Không chỉ là một chương trình, mà là một phần thanh xuân của chúng ta.
+            {settings?.heroSubtitle || "Không chỉ là một chương trình, mà là một phần thanh xuân của chúng ta."}
           </p>
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
             <button
@@ -138,7 +165,7 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
               <img
                 className="w-full h-full object-cover"
                 alt="Two volunteers helping a student"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO4ZPBzn6CEh8dVx1FwCRQIGpkTe_YBs3jW5MxmUNCh7B1g8jaNQ1iWoH8PNf8TpBgdpR-ByPEMSNLpvV6t-P-IXBxJQXe54y_sZ8BZqCzRQFctX4r1mHKh8C8u61BJvEdvg5eZEqGvob4Za4NqC0db6jpikBKychhGOYVmX_HgX3AZiusOFfxEvO4OBj4i8AQwZGSz91jd0f9Z95Z2qrQY3KXqIEV76dqq04oyYchu_3wjZkK59X4"
+                src="https://res.cloudinary.com/ly6xwuwk/image/upload/v1783850195/KHG07408_furqmw.jpg"
               />
             </div>
             <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-tertiary-fixed rounded-3xl -z-10 opacity-30 blur-xl"></div>
@@ -189,11 +216,43 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
         </div>
         <div className="relative z-10 text-center text-white">
           <h2 className="font-headline-lg text-3xl md:text-4xl mb-8">Một Mùa Hè Đáng Nhớ</h2>
-          <button className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 hover:scale-110 transition-transform group mx-auto">
+          <button
+            onClick={() => setIsVideoOpen(true)}
+            className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 hover:scale-110 transition-transform group mx-auto"
+          >
             <span className="material-symbols-outlined text-5xl group-hover:text-tertiary-fixed transition-colors" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
           </button>
           <p className="mt-8 font-body-lg text-lg max-w-xl mx-auto opacity-80 px-margin-mobile">Xem lại phim tài liệu ngắn về hành trình Tiếp Sức Mùa Thi 2026</p>
         </div>
+
+        {/* Video Player Modal */}
+        {isVideoOpen && settings?.youtubeVideoUrl && (
+          <div
+            onClick={() => setIsVideoOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 cursor-pointer"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-4xl w-full aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <button
+                onClick={() => setIsVideoOpen(false)}
+                className="absolute top-4 right-4 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors z-50"
+                title="Đóng video"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+              <iframe
+                className="w-full h-full"
+                src={settings.youtubeVideoUrl}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Section 5: Hall of Fame Preview */}
@@ -211,69 +270,34 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-          {/* Volunteer Card 1 */}
-          <div
-            onClick={() => {
-              if (onSelectMemberId) onSelectMemberId(1);
-              onNavigate('/ho-so-thanh-vien');
-            }}
-            className="glass-card rounded-[40px] overflow-hidden group hover:-translate-y-4 transition-all duration-500 cursor-pointer border border-transparent hover:border-primary/30"
-          >
-            <div className="h-80 overflow-hidden">
-              <img
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                alt="Nguyen Minh Anh"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuClJGVTNXVolaaKMX53IosL4DpUBx82A2cSvXbBIEFdckBlYgEOSfbJ-eUINf4YL1-l2l67Eutdsrf6aEaqrug2wxFbmiOya3ZKW58Dck1cTcdSFuTVwjPv6PUGiV1kU1Iujo-DAIIwi1XNRu-0xo6la_cmyWxHD27MaL7XUf-FVlD7tl9Q8zNbbsgO1d0MkGy8RqzaFytwBAaeJNNeANgmhesYkQNnMQtOc-0HuUTzAUncsXBei3zJ"
-              />
+          {featuredVolunteers.map((v) => (
+            <div
+              key={v.id}
+              onClick={() => {
+                if (onSelectMemberId) onSelectMemberId(v.id);
+                onNavigate('/ho-so-thanh-vien');
+              }}
+              className="glass-card rounded-[40px] overflow-hidden group hover:-translate-y-4 transition-all duration-500 cursor-pointer border border-transparent hover:border-primary/30"
+            >
+              <div className="h-80 overflow-hidden bg-surface-container">
+                <img
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  alt={v.fullName}
+                  src={v.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&h=400&q=80'}
+                />
+              </div>
+              <div className="p-8">
+                <h3 className="font-headline-md text-xl font-bold text-on-surface mb-1">{v.fullName}</h3>
+                <p className="text-primary font-bold text-[12px] uppercase mb-4">{v.roleName || 'Tình nguyện viên'}</p>
+                <p className="text-on-surface-variant italic">"{v.quote || 'Dưới bóng cờ xanh, chúng tôi cống hiến hết mình!'}"</p>
+              </div>
             </div>
-            <div className="p-8">
-              <h3 className="font-headline-md text-xl font-bold text-on-surface mb-1">Nguyễn Minh Anh</h3>
-              <p className="text-primary font-bold text-[12px] uppercase mb-4">Đội trưởng Đội Điều phối</p>
-              <p className="text-on-surface-variant italic">"Hạnh phúc là khi thấy nụ cười thở phào của các em sau giờ thi."</p>
+          ))}
+          {featuredVolunteers.length === 0 && (
+            <div className="col-span-3 text-center py-8 text-on-surface-variant italic bg-surface-container rounded-3xl">
+              Chưa có gương mặt tiêu biểu nào được chọn.
             </div>
-          </div>
-          {/* Volunteer Card 2 */}
-          <div
-            onClick={() => {
-              if (onSelectMemberId) onSelectMemberId(2);
-              onNavigate('/ho-so-thanh-vien');
-            }}
-            className="glass-card rounded-[40px] overflow-hidden group hover:-translate-y-4 transition-all duration-500 cursor-pointer border border-transparent hover:border-primary/30"
-          >
-            <div className="h-80 overflow-hidden">
-              <img
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                alt="Tran Hoang Nam"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU0Hvv6nBS51AIN-XBgC7_BZfIdJjeY_xGsQFGcWenItcqPopgEfL3S19IG_CSegMsVN7HThtIF4BOGcEwUBg6DVlFuO5DjBv1WASWJC0RXF49poTk3mMeF_wuGn_lPhRDvu0nWjABicZDKFXtw5DR8lZDcc-vbiegzMcr6O1nSrcC-I1AmgNSpN-y5iNe__wPbIfmZqV9RIMnup6pW1v6UU-aEVDkP111sjNOrZ9OcTrAM38-AxWp"
-              />
-            </div>
-            <div className="p-8">
-              <h3 className="font-headline-md text-xl font-bold text-on-surface mb-1">Trần Hoàng Nam</h3>
-              <p className="text-primary font-bold text-[12px] uppercase mb-4">Phụ trách Hậu cần</p>
-              <p className="text-on-surface-variant italic">"Cống hiến không cần lý do, chỉ cần một trái tim đủ nhiệt huyết."</p>
-            </div>
-          </div>
-          {/* Volunteer Card 3 */}
-          <div
-            onClick={() => {
-              if (onSelectMemberId) onSelectMemberId(3);
-              onNavigate('/ho-so-thanh-vien');
-            }}
-            className="glass-card rounded-[40px] overflow-hidden group hover:-translate-y-4 transition-all duration-500 cursor-pointer border border-transparent hover:border-primary/30"
-          >
-            <div className="h-80 overflow-hidden">
-              <img
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                alt="Le Phuong Thao"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyFFRZp9lyr38KDAw7hzttN2kzPvrF0PJrSF8SZ9eMGkTZ6nTrqG1O7AL7b8Qnd9G8JBJEMMuihzz0vYMoKmZIfW7vTfPX1s_MxQJm9X-rvZX6ZpgC6kpYymdxxq7U0JTfbvbGu_3XhwRxWN8ODo4m8Y764P6Dl-Tjv5EkaoHaXdS4PiDBX8A-Eie5NBchVKLXUjpoU90F05jQkQ7lt2vyqy03HYvNeRPNKAqpDLXRmmscY82j979h"
-              />
-            </div>
-            <div className="p-8">
-              <h3 className="font-headline-md text-xl font-bold text-on-surface mb-1">Lê Phương Thảo</h3>
-              <p className="text-primary font-bold text-[12px] uppercase mb-4">Điều phối viên Truyền thông</p>
-              <p className="text-on-surface-variant italic">"Kể lại những câu chuyện đẹp là cách chúng ta giữ lửa cho tương lai."</p>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -286,12 +310,12 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
               <img
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 alt="Moments cheer"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyV_JECAdM74cHTH0oUZOw7yTsPYzY1TmpKuvVJ1rgv893BchXZHZRVGiDPZYCq8rPLiQnh06JWoRUdIL8pwK8q17KL25zQ6_sQO2SZruN8OKaU_1-K5FlY-AUnZYQCqcLzyeF9WhvqxKtSGIlDS1-5XMHzWLTJ5ToTfzFT6xJT7P35dP3HPSorTmi919VTB9exXYkPgV-855qiEq72fQ5O78A0KDRAPrtronljibYplhayxpmOR2K"
+                src={moments[0]?.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuDyV_JECAdM74cHTH0oUZOw7yTsPYzY1TmpKuvVJ1rgv893BchXZHZRVGiDPZYCq8rPLiQnh06JWoRUdIL8pwK8q17KL25zQ6_sQO2SZruN8OKaU_1-K5FlY-AUnZYQCqcLzyeF9WhvqxKtSGIlDS1-5XMHzWLTJ5ToTfzFT6xJT7P35dP3HPSorTmi919VTB9exXYkPgV-855qiEq72fQ5O78A0KDRAPrtronljibYplhayxpmOR2K"}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-6 md:p-12 flex items-end">
                 <div className="text-white">
-                  <span className="text-[12px] font-bold uppercase tracking-widest mb-2 block">Ngày thi cuối cùng</span>
-                  <h3 className="text-2xl font-bold">Niềm vui vỡ òa bên cánh cổng trường</h3>
+                  <span className="text-[12px] font-bold uppercase tracking-widest mb-2 block">Chiến dịch TSMT 2026</span>
+                  <h3 className="text-2xl font-bold">{moments[0]?.category || "Kỷ niệm đong đầy cảm xúc"}</h3>
                 </div>
               </div>
             </div>
@@ -300,14 +324,14 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
                 <img
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   alt="Training workshop"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuClsAb8jFtKX4iZxZdh414fcB_EMVjVERkg7YUANt6BGqBJr-SNAuVkuiajiBlXAXMZ8L2_7L5SsmAHfqFSYQy1mDZUxK4_2pANGI73btyqo6RaRPqUxC0rBHnxQ0pURy6ZTzDP_JJq7tGwY5_pa5x_JvBzJxzZOflg0q06eCz5ibqmoTBdvTSElY8G6p3krfWOUXXEB0Calh7ZzFTpJKW93m4p94W3savMUoiijJg8a9s4SQ43LTIq"
+                  src={moments[1]?.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuClsAb8jFtKX4iZxZdh414fcB_EMVjVERkg7YUANt6BGqBJr-SNAuVkuiajiBlXAXMZ8L2_7L5SsmAHfqFSYQy1mDZUxK4_2pANGI73btyqo6RaRPqUxC0rBHnxQ0pURy6ZTzDP_JJq7tGwY5_pa5x_JvBzJxzZOflg0q06eCz5ibqmoTBdvTSElY8G6p3krfWOUXXEB0Calh7ZzFTpJKW93m4p94W3savMUoiijJg8a9s4SQ43LTIq"}
                 />
               </div>
               <div className="group relative overflow-hidden rounded-[2rem]">
                 <img
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   alt="Lunch break"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCbMoz86BAfVnmPGo48D6OeUqId5slAiY2kUoR5OjWPDtPqEw0fzZKuxqlzPZqBxndwhVH1RwqMtn3_gvYTSJApxj-gLnGGPS8Bb9-oUPETzW7eLdsIGeCvDMhNI61XKa8yNm7VkFI02NAFCVzJWG7wbNKXFScfagnkNWaSiqQAlkHJ_Ktc-zGu74qAKpUOEADsmUhkEonrGRvnRSnZSy7-91Dvz9hvzcQmb7DHf-ttLb-5q1nVyi3"
+                  src={moments[2]?.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuCCbMoz86BAfVnmPGo48D6OeUqId5slAiY2kUoR5OjWPDtPqEw0fzZKuxqlzPZqBxndwhVH1RwqMtn3_gvYTSJApxj-gLnGGPS8Bb9-oUPETzW7eLdsIGeCvDMhNI61XKa8yNm7VkFI02NAFCVzJWG7wbNKXFScfagnkNWaSiqQAlkHJ_Ktc-zGu74qAKpUOEADsmUhkEonrGRvnRSnZSy7-91Dvz9hvzcQmb7DHf-ttLb-5q1nVyi3"}
                 />
               </div>
             </div>
@@ -352,46 +376,43 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
             <p className="text-on-surface-variant">Những dòng tin nhắn vụn vặt nhưng đong đầy cảm xúc.</p>
           </div>
           <div className="masonry">
-            {/* Message 1 */}
-            <div className="masonry-item glass-card p-8 rounded-3xl">
-              <p className="text-on-surface mb-6 font-medium italic">"Em cảm ơn các anh chị áo xanh rất nhiều! Nụ cười của chị ở cổng trường làm em bớt run hẳn luôn."</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">M</div>
-                <span className="text-xs font-bold text-on-surface-variant">Minh Anh - Thí sinh THPT</span>
+            {gratitudes.slice(0, 6).map((g, index) => {
+              const isAlternate = index === 1;
+              return (
+                <div
+                  key={g.id}
+                  className={`masonry-item glass-card p-8 rounded-3xl ${
+                    isAlternate
+                      ? 'bg-primary-container text-on-primary-container border-none'
+                      : 'text-on-surface'
+                  }`}
+                >
+                  <p className="mb-6 font-medium italic">"{g.content}"</p>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                        isAlternate ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary'
+                      }`}
+                    >
+                      {(g.senderName || 'K').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <span className={`text-xs font-bold block ${isAlternate ? 'text-on-primary-container' : 'text-on-surface-variant'}`}>
+                        {g.senderName}
+                      </span>
+                      <span className="text-[10px] opacity-75">
+                        {g.verified ? 'Tình nguyện viên' : 'Sĩ tử / Phụ huynh'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {gratitudes.length === 0 && (
+              <div className="col-span-full text-center py-8 text-on-surface-variant italic bg-surface-container rounded-3xl">
+                Chưa có lời tri ân nào được viết.
               </div>
-            </div>
-            {/* Message 2 */}
-            <div className="masonry-item glass-card p-8 rounded-3xl bg-primary-container text-on-primary-container border-none">
-              <p className="mb-6 font-medium italic">"Mùa hè ý nghĩa nhất từ trước đến nay. Được làm việc cùng mọi người là một vinh dự của mình."</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">H</div>
-                <span className="text-xs font-bold text-on-primary-container">Hoàng Nam - TNV Đội 3</span>
-              </div>
-            </div>
-            {/* Message 3 */}
-            <div className="masonry-item glass-card p-8 rounded-3xl">
-              <p className="text-on-surface mb-6 font-medium italic">"Cảm ơn Tiếp Sức Mùa Thi 2026 đã cho tôi những người bạn tuyệt vời. Mãi mãi không quên!"</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold">T</div>
-                <span className="text-xs font-bold text-on-surface-variant">Thu Thủy - TNV Truyền thông</span>
-              </div>
-            </div>
-            {/* Message 4 */}
-            <div className="masonry-item glass-card p-8 rounded-3xl">
-              <p className="text-on-surface mb-6 font-medium italic">"Dù mệt nhưng nhìn các em làm bài tốt, bao nhiêu mệt mỏi cũng tan biến hết."</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold">D</div>
-                <span className="text-xs font-bold text-on-surface-variant">Duy Mạnh - TNV Đội 5</span>
-              </div>
-            </div>
-            {/* Message 5 */}
-            <div className="masonry-item glass-card p-8 rounded-3xl">
-              <p className="text-on-surface mb-6 font-medium italic">"Yêu lắm màu áo xanh tình nguyện. Cảm ơn ban tổ chức đã tạo điều kiện cho chúng em cống hiến."</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-surface-dim flex items-center justify-center text-on-surface font-bold">K</div>
-                <span className="text-xs font-bold text-on-surface-variant">Khánh Linh - TNV Đội 1</span>
-              </div>
-            </div>
+            )}
           </div>
           <div className="mt-12 text-center">
             <button
@@ -471,7 +492,7 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
                   <img
                     className="w-full h-full object-cover"
                     alt="Recruitment meeting"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDamLegoQz_utAWeq8e55kcJMBLeV7Dr9EB8hhife3_daiYr4X-g-9HPPqyEdeo3-ouTQjop98Xf9IAF1C7qGUBu2ZJHgYNcrokYgFqY_rwJj_214HC_ChR_jt-lHZYHAIZ3zSv3LOMYTCb_wM05QbPFsAe4UTkppHBN5jWU-QByrWk5v-ykzKyCx0HY0KxO7evdtigdF-MvWviHWRYfPQ5n4vw1gK2YnHWlVnRRtaeskE9VQhOASTL"
+                    src="https://res.cloudinary.com/ly6xwuwk/image/upload/v1783851291/706527028_122179729316932841_2409221610944694654_n_rxxdj3.jpg"
                   />
                 </div>
               </div>
@@ -488,7 +509,7 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
                   <img
                     className="w-full h-full object-cover"
                     alt="Training workshop"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuArDQXVbW-K4AC3SgQAeqOosxf0FAiHANWo9ctURIC3LW4KAMfqAqCV4vbDHX_Xqmn3fI8nhRFijYQkp3adSRxKYbmrQRnCJi62CCYfMSb7rfKNy-y_Lz7ofW-2l-0cHg3G7O9gAPr4D41cF49b8JZQBduWOqKdF90x_gbLsQuybs1IR3rNGI0KwjpGRZBYghCz3-u4n2D2LByB0PaNvWZ1HPRSIJH-64n5X8NKsN5MrUxTig2s_7N0"
+                    src="https://res.cloudinary.com/ly6xwuwk/image/upload/v1783851291/706629290_122179729034932841_5156132463535501969_n_pdwg2n.jpg"
                   />
                 </div>
               </div>
@@ -517,7 +538,7 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
                   <img
                     className="w-full h-full object-cover"
                     alt="Active volunteer support"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNcoeU_YIe5DXo6gq7V8urvn4bmItUJl2ux4hHQTTrb_pVDEQLd9rdpVf44U2WrytqVt2-kua6g32NQ93A5WwsbtcT4-lGgUE2SwtawDKFSTOzJlqSN8WYxgcy9O9Cp9rYJ8fk5boFKwAFbbflttu2EZcwQMeM6mBuy7TwswhudTeB21FoapyaxOuHtoDagLmTNRcfK0DnV49X2GUNADitdIPDpYXHsmbR7AK9DwZIOfWaGJPYF7Sx"
+                    src="https://res.cloudinary.com/ly6xwuwk/image/upload/v1783851290/722934899_1995752054644137_7844524882289143136_n_kw5hs0.jpg"
                   />
                 </div>
               </div>
@@ -538,34 +559,20 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
           </button>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          <div className="rounded-2xl overflow-hidden h-64 shadow-md hover:scale-[1.02] transition-transform">
-            <img
-              className="w-full h-full object-cover"
-              alt="High-five group"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJyAljxRYDRdrgIdyS-N6WaJkV_2dP9lyRAJwBL7tOuXaC7zw6JXPhzoDE6R4DiHp9_3jJr9aOyjohHQZV31JplBC1fvpj1kAH2jMGhA1vJ5MHCLMA1l85uZHMUvl8Kvc-EDsLECqR1XNtjXwNh1sykMZduvGFeQrkf28Vkh9TE4ahLoESbEF0xy0OefYWTx3mf7qMwWYEWfmYtwBB4iSI9jIzaIfrJaQLZVTBOysx7H9oJ-1vX9w5"
-            />
-          </div>
-          <div className="rounded-2xl overflow-hidden h-64 shadow-md hover:scale-[1.02] transition-transform">
-            <img
-              className="w-full h-full object-cover"
-              alt="Volunteering banner"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3_5JFfJL3Hz_Nh6qSIedJKpnYmjLKfQjjZ60wHnRt9vibcgrish63NTgoVfLbvwevuw5zIVZ7daye5UCfHIXwX5uwlyBdmv3_xcAnBcICKazuouoqI36sE1_6-hoDr4z8r1e2h9C0vp0pS9IZMaCNS2JViFtcFKbQuQVPEBPgtE8gSmfuKZFYijlf_vc8em6NjAhOvZ2Zu96ReaddjmgrYvAoBsWnEKPjJvIsC2M99Zfz1nyRkrZW"
-            />
-          </div>
-          <div className="rounded-2xl overflow-hidden h-64 shadow-md hover:scale-[1.02] transition-transform">
-            <img
-              className="w-full h-full object-cover"
-              alt="Helping student with backpack"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR_WLFE49gPDx2Vo12LKxSV5gZdIqjSu5XOifrCW3G--97Q_QYA-w4TkKK9Vv8_uzlcvC_UbkjWeAOipGq36mOvMUvIUjP2G117PpWNaJ6PyrthjiVU5ei9DZedySypXyO3ogIjxojstY5zzlfoM3IAuJwynnuwiaX3EKw_Zn1UyNSEwsiDNAiw9_l9hhhYKLZfGvKX3NLBf-yxEf7Oz_aqugvgliDPluTLKfL0YGgD7sa4k9LIAEF"
-            />
-          </div>
-          <div className="rounded-2xl overflow-hidden h-64 shadow-md hover:scale-[1.02] transition-transform">
-            <img
-              className="w-full h-full object-cover"
-              alt="Decorating booth"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNoVciBZAa48C0UJHxuJQj11UGf-uRKcoTThQMHdM4V1KfF_nVHE1MobW16geORyJPyEf_DpBUvVhKN5Gm6AI4jVniA1wXW1-yTZsLZ4rXvv4ef_H-rYEJGMf0b0HG9eWYTpJZPVgJGJ-GRELMlKm2B9YJXafC7PAtZcve3jcKJ1oUI8cPA1FaxwVqpZXB6ikgz5denhPwMt_AUIFFXBjia5Zpsjzx9uG8jLeZeSqxC-dPzf99wlJz"
-            />
-          </div>
+          {moments.slice(0, 8).map((photo) => (
+            <div key={photo.id} className="rounded-2xl overflow-hidden h-64 shadow-md hover:scale-[1.02] transition-transform">
+              <img
+                className="w-full h-full object-cover"
+                alt={photo.category || "Photo"}
+                src={photo.imageUrl}
+              />
+            </div>
+          ))}
+          {moments.length === 0 && (
+            <div className="col-span-4 text-center py-8 text-on-surface-variant italic bg-surface-container rounded-3xl">
+              Chưa có hình ảnh nào trong kho lưu trữ.
+            </div>
+          )}
         </div>
       </section>
 
@@ -575,7 +582,7 @@ export default function HomeScreen({ onNavigate, onSelectMemberId }) {
           <img
             className="w-full h-full object-cover brightness-[0.5]"
             alt="Closing sunset view"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzNgWNAEEh9pLaLHdW2drLZU3SFbdhb6C_-tQUTiEneAz9DXwWzVLh_CmcU0WPuQgIXriXgEnIV8yd5qF3wQpfkLonUUfAkw8o7AjdaKFHkzP93UjZHB6VhPjrYk7lsjMEHSTjhMWS0v0fvJgItFSJ3b6p4hgMJSol9FPZ2c0ZhesGD6mAkITHDOvKrP_WbMzs6kZPyYI8gxnx8KqEW-NODwXWBlMexVpb6OzM_j-AKH6BTDwqvpJD"
+            src="https://res.cloudinary.com/ly6xwuwk/image/upload/v1783852062/711170847_122180337554932841_4257595840174138025_n_bfrp2i.jpg"
           />
           <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px]"></div>
         </div>

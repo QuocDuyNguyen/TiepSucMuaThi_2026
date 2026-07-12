@@ -3,6 +3,17 @@ import React from 'react';
 export default function ClosingScreen({ onNavigate }) {
   const [hearts, setHearts] = React.useState([]);
   const [stats, setStats] = React.useState({ volunteers: 0, students: 0, days: 0 });
+  const [settings, setSettings] = React.useState(null);
+
+  // Fetch site settings
+  React.useEffect(() => {
+    fetch('http://localhost:8080/api/settings')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data) setSettings(data);
+      })
+      .catch(err => console.error('Error fetching settings:', err));
+  }, []);
 
   // Floating hearts animation
   React.useEffect(() => {
@@ -24,9 +35,9 @@ export default function ClosingScreen({ onNavigate }) {
 
   // Simple number counters animation on load
   React.useEffect(() => {
-    let volTarget = 15000;
-    let stuTarget = 1200000;
-    let daysTarget = 45;
+    let volTarget = settings?.closingVolTarget || 15000;
+    let stuTarget = settings?.closingStuTarget || 1200000;
+    let daysTarget = settings?.closingDaysTarget || 45;
 
     let duration = 2000;
     let steps = 50;
@@ -48,14 +59,14 @@ export default function ClosingScreen({ onNavigate }) {
     }, stepTime);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [settings]);
 
   const handleShare = () => {
     alert('Đã sao chép liên kết chia sẻ của Lời Kết 2026!');
   };
 
   return (
-    <div className="w-full text-on-surface font-body-md overflow-x-hidden">
+    <div className="w-full text-on-surface font-body-md overflow-x-hidden text-center">
       <style>{`
         .hero-gradient-overlay {
           background: linear-gradient(to bottom, rgba(0, 20, 42, 0.8), rgba(0, 91, 175, 0.4) 60%, rgba(244, 250, 253, 1) 95%);
@@ -105,11 +116,11 @@ export default function ClosingScreen({ onNavigate }) {
         {/* Full-screen Background Photo */}
         <div className="absolute inset-0 z-0">
           <img
-            alt="Vietnam Youth Volunteers Group Photo"
+            alt="Closing Cover Background"
             className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwHmpsBSzonDzh6ZuduA5bTWcQXAF6jWvEt4xQZgFmd3xcTmcmpd3XfZx3E8qAierETbfa8hIyV-Wr6t_8gPSmgZHnzEtq87YjWxehPdRkHPXu-AJZ85ppNhmIDzDrDjbkT_SbrbAXxU4I7UJOJjSqr2VfoMawDNwUcN3n7ZD0BLum7xOdAH44UTuSmuJaLR0oFo87I5qLERz0R5Y-Wt-7HOU1IBy9YPIq-VCbExFwQEFwHoE4S4wu"
+            src={settings?.closingImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuCwHmpsBSzonDzh6ZuduA5bTWcQXAF6jWvEt4xQZgFmd3xcTmcmpd3XfZx3E8qAierETbfa8hIyV-Wr6t_8gPSmgZHnzEtq87YjWxehPdRkHPXu-AJZ85ppNhmIDzDrDjbkT_SbrbAXxU4I7UJOJjSqr2VfoMawDNwUcN3n7ZD0BLum7xOdAH44UTuSmuJaLR0oFo87I5qLERz0R5Y-Wt-7HOU1IBy9YPIq-VCbExFwQEFwHoE4S4wu"}
           />
-          <div className="absolute inset-0 hero-gradient-overlay"></div>
+          <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] hero-gradient-overlay"></div>
         </div>
 
         {/* Floating Hearts Layer */}
@@ -137,10 +148,10 @@ export default function ClosingScreen({ onNavigate }) {
           {/* Headline Section */}
           <div className="max-w-4xl stagger-in" style={{ animationDelay: '0.2s' }}>
             <h1 className="font-display-lg text-4xl md:text-6xl lg:text-[64px] font-extrabold text-white mb-6 drop-shadow-xl">
-              Xin Cảm Ơn Vì Đã Cùng Nhau Viết Nên Thanh Xuân
+              {settings?.closingTitle || "Xin Cảm Ơn Vì Đã Cùng Nhau Viết Nên Thanh Xuân"}
             </h1>
             <p className="font-body-lg text-lg md:text-xl text-white/90 max-w-2xl mx-auto italic">
-              "Có những mùa hè không bao giờ kết thúc, bởi tinh thần Tiếp Sức Mùa Thi sẽ mãi cháy rực trong tim mỗi chúng ta."
+              {settings?.closingSubtitle || "\"Có những mùa hè không bao giờ kết thúc, bởi tinh thần Tiếp Sức Mùa Thi sẽ mãi cháy rực trong tim mỗi chúng ta.\""}
             </p>
           </div>
 
@@ -207,14 +218,14 @@ export default function ClosingScreen({ onNavigate }) {
       </main>
 
       {/* Detailed Closing Section (White Background) */}
-      <section className="bg-surface relative z-30 py-section-gap">
+      <section className="bg-surface relative z-30 py-section-gap text-left">
         <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <span className="font-label-sm text-xs font-bold text-primary uppercase tracking-[0.2em] block">Hành trình 2026</span>
               <h2 className="font-headline-lg text-3xl md:text-4xl font-extrabold text-on-surface">Mỗi nụ cười là một cột mốc, mỗi nỗ lực là một niềm tin.</h2>
               <p className="font-body-lg text-lg text-on-surface-variant leading-relaxed">
-                Chiến dịch Tiếp Sức Mùa Thi 2026 khép lại không chỉ bằng những con số, mà bằng những cái ôm, những lời cảm ơn nghẹn ngào và sự trưởng thành của hàng vạn bạn trẻ. Chúng ta đã cùng nhau vượt qua cái nắng oi ả, những cơn mưa bất chợt để mang lại niềm an tâm nhất cho các sĩ tử.
+                {settings?.closingContent || "Chiến dịch Tiếp Sức Mùa Thi 2026 khép lại không chỉ bằng những con số, mà bằng những cái ôm, những lời cảm ơn nghẹn ngào và sự trưởng thành của hàng vạn bạn trẻ. Chúng ta đã cùng nhau vượt qua cái nắng oi ả, những cơn mưa bất chợt để mang lại niềm an tâm nhất cho các sĩ tử."}
               </p>
               <div className="pt-4">
                 <button
@@ -232,14 +243,14 @@ export default function ClosingScreen({ onNavigate }) {
                 <img
                   alt="Student Success Moment"
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ557AdLLZ6-gz5INrQrE3sP5s6G871XSqgKBdcm3VlrFW85iTcxFTAkSNjjv2mQKhIDroSvp_0nt1qjkkzoFm5_UbqjqNYkvof880TA2iOhWP2vUBgVwxQAFQJSycJIMH5tcPtjfpaBLTrdjNDSdD1PYfMiGX5VngyIlvr-JZ6MzvZDZT7HIey_dTJUS9leUqGqYtEfIB8GVJfu1WDUlDgFf-I_EHNeXqNzuMpNo9-B-SxwJFZ7pO"
+                  src={new URL("../assets/KHG06194.JPG", import.meta.url).href}
                 />
               </div>
               <div className="rounded-3xl overflow-hidden h-64 shadow-xl border border-outline-variant">
                 <img
                   alt="Volunteers High Five"
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDXHIaschtRIGLjXjlsrkZ7XnQfv79m1vksY1OkWDDE2X7RbjablWe9JuvE_VJsaOzV_JPTD6tLQRFLOxAK6z5stz8NECmGQeWxmXhuKu8wrFYut6MmJPpaOklDAzMDm3t80IYDrmCtfE0tpgJb2Q9UQBVBfWfQE9rpkNpL3-xax4BhmoaeD-h1vVvdp140-qNlVHPflliBR-EbbFn9S7hAQBsV0qXBCKbFU1ooJ7FPIY1eyTj8cZX"
+                  src={new URL("../assets/KHG05877.jpg", import.meta.url).href}
                 />
               </div>
             </div>

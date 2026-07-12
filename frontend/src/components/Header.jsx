@@ -1,7 +1,7 @@
 import React from 'react';
 import { routes } from '../data/stitchContent.js';
 
-export default function Header({ currentPath = '/', onNavigate }) {
+export default function Header({ currentPath = '/', onNavigate, token, userRole, onLogout }) {
   const navigate = (event, path) => {
     event.preventDefault();
     onNavigate(path);
@@ -28,9 +28,36 @@ export default function Header({ currentPath = '/', onNavigate }) {
           </a>
         ))}
       </nav>
-      <a className="header-action" href="/so-luu-but" onClick={(event) => navigate(event, '/so-luu-but')}>
-        Gửi lời chúc
-      </a>
+      <div className="flex items-center gap-4">
+        {userRole === 'ROLE_ADMIN' && (
+          <a
+            className={`text-sm font-bold ${currentPath === '/admin' ? 'text-primary animate-pulse' : 'text-outline hover:text-primary'} transition-colors cursor-pointer`}
+            href="/admin"
+            onClick={(event) => navigate(event, '/admin')}
+          >
+            Quản trị
+          </a>
+        )}
+        {token && userRole !== 'ROLE_GUEST' ? (
+          <button
+            onClick={onLogout}
+            className="text-xs font-bold text-outline hover:text-error transition-colors"
+          >
+            Đăng xuất
+          </button>
+        ) : (
+          <a
+            className={`text-xs font-bold ${currentPath === '/login' ? 'text-primary' : 'text-outline hover:text-primary'} transition-colors cursor-pointer`}
+            href="/login"
+            onClick={(event) => navigate(event, '/login')}
+          >
+            Đăng nhập
+          </a>
+        )}
+        <a className="header-action" href="/so-luu-but" onClick={(event) => navigate(event, '/so-luu-but')}>
+          Gửi lời chúc
+        </a>
+      </div>
     </header>
   );
 }

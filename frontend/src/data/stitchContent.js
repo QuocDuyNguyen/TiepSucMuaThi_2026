@@ -69,9 +69,3 @@ export const guestbookEntries = [
   { name: 'Mai Phương', message: 'Cảm ơn vì đã biến những ngày nắng nhất thành những ngày đáng nhớ nhất.', time: '17:05' },
 ];
 
-export const adminRows = [
-  { name: 'Minh Anh', role: 'Đội trưởng', status: 'Đã duyệt', wishes: 18 },
-  { name: 'Quang Huy', role: 'Hậu cần', status: 'Đã duyệt', wishes: 12 },
-  { name: 'Lan Chi', role: 'Truyền thông', status: 'Chờ cập nhật', wishes: 9 },
-  { name: 'Gia Bảo', role: 'Hỗ trợ', status: 'Cần kiểm tra', wishes: 7 },
-];

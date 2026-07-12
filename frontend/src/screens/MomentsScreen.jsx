@@ -1,124 +1,201 @@
 import React from 'react';
 
-const initialMoments = [
-  {
-    id: 1,
-    title: 'Những Bước Chân Đầu Tiên',
-    category: 'Tập huấn',
-    detail: 'Khoảnh khắc các chiến sĩ nhận nhiệm vụ, sẵn sàng cho một mùa hè rực rỡ.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC67B-uVE4240J-9_koxgjvZuyXXEaUQjTKNjFTaWTDlSKmjW2JRode60v4Iie-fCndtHbGKOtEg8Z_i6pl5jB43R3fZjlTkRzMLZZL6np3DCQxXpSba2189eYhJRtubSkQrh3Hu0cjR45g8wEY0QdjwHnmYYY88_W1e9Ms3IhLQ80k4EAcxZlSBhWCNIRXx8I4xq4tElaGIhHsi3C78hk5lYeKyikH2ipWAlaBMBcz9uZZbLxBorJF',
-  },
-  {
-    id: 2,
-    title: 'Nụ Cười Sĩ Tử',
-    category: 'Tiếp sức',
-    detail: 'Sự động viên nhỏ bé nhưng mang lại sức mạnh tinh thần lớn lao trong phòng thi.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBhZfcKx9mga_ixAd2dYaqbyqGnLkwxMQWyRtJpRWUw8-7GB935zya8RQz5omI3OxdJd5pOh9oCKijCfsuDSk8EMdxFjVPijqCSszRdXVys4Q7_IvRmOqhZoszjNecXj97tB7x1qdB4uWAUD1X18mWyBC_v67cEm5eAMKT45XxbKBMG2SrQFCBlqFVyBfEHO7mS6vJd5Nc-ukRrQNqClKghxQ1lxn29s6-JIaCSD7ArUxYwl2VDbaAg',
-    isTall: true,
-  },
-  {
-    id: 3,
-    title: 'Đồng Đội Là Nhà',
-    category: 'Gắn kết',
-    detail: 'Vượt qua mệt mỏi, chúng tôi tìm thấy nhau trong những tiếng cười giòn giã.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB1TQnCh-7hOgoY8WwWmpwKREd47dPNHuzSpciivOPvOP5AWUt2AD7ZNdEDgfaufsFEBy7I0zNL1AaLyaChdhTAwgcZvG6QwQVl7yYdNyRZ35W4ObO5CfFxAP3JWPT2xv5dr6ruyS_XgonPXo8tQeunOQ-MMiND4xBv_MpZEJtx1mGbTi6gfCsORXSo9aBYvdwlG7rBp2YaS7zkGNnL7j7lEMbhobtBfkM_4u3p2XsI_u6H0kg_f4Vs',
-  },
-  {
-    id: 4,
-    title: 'Hoàng Hôn Tình Nguyện',
-    category: 'Tiếp sức',
-    detail: 'Kết thúc một ngày dài bằng sự mãn nguyện khi đã giúp đỡ được ai đó.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZf_j_Qom74FvNaCkZWQjyT0d2nvU16PVf_xVV0ecUW_nUKP9Bt1SPGIBgDIMmt1vAH0M1zFwM3qSHEyEMIsKUBXP5kRVgZlBm5eCFNOLJk_sxAC8od0nazukltc1ClOcZv1lzkkykSKG1Mj4_VgFReiXDJ1sIRW9aJZrdsUBt692_b-8-Ad175ziYdRW1903DwytqVUpvH-Iv-2ILS1hSd_cIMv0M1s7B6rkbVF3pGVDGtS2GGHpK',
-  },
-];
-
-const topMoments = [
-  {
-    id: '01',
-    title: 'Cơn Mưa Thắt Chặt Tình Thân',
-    detail: 'Dù mưa xối xả, các chiến sĩ vẫn kiên cường bám trụ tại điểm thi để hỗ trợ từng bạn học sinh.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBIhL6W6fwed1bM0NNvd0Kr7XVKKQal5lI5ZLM3tR77knLMS90oO4QTxp9d2h6V67bxCTIx6b1U2dvRdi2ZX5C-E2JgSb-_IaAIEXJexmDFK6qojE_aKGY7ZmX9Z_KUsOo8xm-qEqbbu-O4XvODBCOzHaAhTSwe-6P9wO-FeSJYiIXQC5ZKkBdORJnOucqAE2YDJhBn_gxKx_MN4mwImY9QTNdOrwvxFhafF0DZvlmLlNAzYgLPbPdM',
-  },
-  {
-    id: '02',
-    title: 'Chuyến Xe 0 Đồng Cuối Cùng',
-    detail: 'Hành trình đưa thí sinh có hoàn cảnh khó khăn vượt hơn 50km để kịp giờ thi.',
-    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: '03',
-    title: 'Lời Chúc Viết Vội',
-    detail: 'Hàng ngàn tấm thiệp đầy ắp yêu thương được trao tận tay sĩ tử trước khi vào cổng trường.',
-    image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80',
-  },
-];
-
-const polaroids = [
-  { location: 'Hà Nội, 06/2026', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAp22JjKo8tcySXJjYYxYx9rpzWuzyNfYbYNL8jMt5wDITdRP8Z48-qgRMeQETgwL45v68f1JQZ6_cyLzUjuBmy1Pz5oBG-FVt5FSFkd4ZSy9-UEC3vTP8FTcd8l6Y4nYN4X0-ZoDLwarVmx3aywmdM5aH-DcNTpUFg3VPdHzVXukWHihzyYR8eg7o7M6RZYx-dkkUPIujb6VyFr5uSWY9IRde-BeIWY39nUceY0YjW8_ImDpbcnMR', rotation: 'rotate-3' },
-  { location: 'TP.HCM, 06/2026', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBylKF-he7M_kTHg6jAgt0O50cT7ddQ0JQkWoy01-aRcSIDRZ0grRoOGgv10OatUJlmpDlC6Z1buF5_VHycnhIeiSRAyZKHlDJ-b7R6NaTjFTznj8VYaCfc3jlTU5vLEChKKsEgKavVYTSVTFSc4cMvW0x8fiFEM4sqNzJObWcTIXUVNKKp-AIzaExCiCT8FqaLdoVtoOpIHqXImqMOhmQPrb0xoLlsmlaD4_e7wvtCwxMaCp3e7Jfg', rotation: '-rotate-6', margin: 'mt-20' },
-  { location: 'Đà Nẵng, 06/2026', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD8YGw-Y_mMBi8G8iTxkIftz5NfMEb-3gmPAZ7QR1ZTAJ_GvT8XlZJ1sKrlbdH3opXGsqjHe8Y0XgxMbC0jPZ36RBMNQyi07dWGC7UOmV5ORnsXBkndU7j9SKcVgGWXOYnHFxBO1gUW90JKSpBq5XtK69x9mViZkAltJjEnWY86hSCKECTczeSOjGH9WDbcxxH-dQ0v40mgKHLIDzgP5HLseO0UZ4_JXK53WDTgCpBm7d4cR3WO95kK', rotation: 'rotate-12' },
-  { location: 'Cần Thơ, 06/2026', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA9B-ttqv5DP4a5oY3dJcYg1NHHuAzO06mI8wX2xivr94TUcxwLGf5sRp4Y1oYnjr7zxRcFXrlB15iKrM-MIRNETPLx_4x0SQW3sRw-yU3atocb32X4wWjMXK0vdg5BpxFWWkB-vPNSxYUujrDF4_7CSI3scXUlpJ1R36Ek2tWfXs0CXkRsdJ5Ud3m6KV0Ghim6fBpM1nS550hXcz1s1AY4PklYuPeiVKVTNVw9_Tc61wp7vs7pjbn-', rotation: '-rotate-2', margin: 'mt-10' },
-  { location: 'Huế, 06/2026', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBscUiq4p7IQ_gM4tix7Pk_Rb6ekL0QTMrRwADCdAIe-HnzPBQ7KPTx_5SNID5eAeK9Bsx4sKQrXxxGRHR0h4zdj1AWAGMelPnePPvBYC6MUmdQYw-3nyoKI09AowvGBJqM61D6zOz29ICE9Ph7wvWyJdImibEB72FUTjal2896bK-DPNwUyHQe1pEH9rygNyJik7HXh8wZlX2-QBMDZ2RvEbvISDMb15yF3msc3ifamK75QHeZFwM', rotation: 'rotate-6' },
-  { location: 'Hải Phòng, 06/2026', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuClJJ804HibV871enK2cC4YcxZQd2ByYfnxm0E6WUbTiq6ENPY8Kc-Zh_RAXJb37Eb2moVnWnEZGCatbvqtIgKbRMUyl9yq4oZ5D0Iyqpqi_cYXIICthmew9wPZ_upo2ZadOC30WEjLjaV6aRDGMt0CzLSpB14QpjEkLOA6llckwmFHHrFlQwCaXb4iG1BgXEoA5Va9cG1Iur0AgOwPK8lsa6UIJtrBahmPmQgEP_vgKtOu7BDVUnn-', rotation: '-rotate-12', margin: 'mt-20' }
-];
 
 export default function MomentsScreen({ onNavigate }) {
+  const defaultTopMoments = [
+    { id: 'top-1', title: 'Nụ cười trước cổng trường', detail: 'Một lời chúc bình tĩnh được gửi đi ngay trước lúc thí sinh bước vào phòng thi.', imageUrl: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=80' },
+    { id: 'top-2', title: 'Đội hình áo xanh trực chốt', detail: 'Các ca trực nối tiếp nhau từ sáng sớm để giữ nhịp hỗ trợ ổn định tại điểm thi.', imageUrl: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80' },
+    { id: 'top-3', title: 'Chai nước mát nghĩa tình', detail: 'Nước mát, bản đồ phòng thi và khu vực nghỉ chân được chuẩn bị chu đáo.', imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80' }
+  ];
+
+  const defaultPolaroids = [
+    { id: 'pol-1', imageUrl: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=800&q=80', title: 'Điểm thi THPT Nguyễn Du', detail: '-rotate-2' },
+    { id: 'pol-2', imageUrl: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=800&q=80', title: 'Điểm thi THPT Gia Định', detail: 'rotate-3' },
+    { id: 'pol-3', imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80', title: 'Điểm thi THPT Trưng Vương', detail: '-rotate-1' },
+    { id: 'pol-4', imageUrl: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=800&q=80', title: 'Điểm thi THCS Lê Lợi', detail: 'rotate-2' }
+  ];
+
+  const [galleryPhotos, setGalleryPhotos] = React.useState([]);
+  const isAdmin = localStorage.getItem('userRole') === 'ROLE_ADMIN';
+  const token = localStorage.getItem('token');
+  
+  const [isEditTopModalOpen, setIsEditTopModalOpen] = React.useState(false);
+  const [editTopData, setEditTopData] = React.useState(null);
+
+  const [isEditPolaroidModalOpen, setIsEditPolaroidModalOpen] = React.useState(false);
+  const [editPolaroidData, setEditPolaroidData] = React.useState(null);
+
+  const handleFileUpload = async (e, setUrlCallback) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await fetch('http://localhost:8080/api/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      setUrlCallback(data.url);
+    } catch (err) {
+      alert('Lỗi tải tệp: ' + err.message);
+    }
+  };
+
+  const handleSaveGalleryItem = async (e, data, category) => {
+    e.preventDefault();
+    const isNew = String(data.id).startsWith('top-') || String(data.id).startsWith('pol-') || !data.id;
+    const method = isNew ? 'POST' : 'PUT';
+    const url = isNew ? 'http://localhost:8080/api/gallery' : `http://localhost:8080/api/gallery/${data.id}`;
+    
+    const payload = { ...data, category };
+    if (isNew) {
+      delete payload.id;
+    }
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Lỗi lưu dữ liệu');
+      const savedData = await res.json();
+      
+      if (isNew) {
+        setGalleryPhotos([...galleryPhotos, savedData]);
+      } else {
+        setGalleryPhotos(galleryPhotos.map(p => p.id === savedData.id ? savedData : p));
+      }
+      setIsEditTopModalOpen(false);
+      setIsEditPolaroidModalOpen(false);
+      alert('Đã lưu thành công!');
+    } catch (err) {
+      alert('Lỗi: ' + err.message);
+    }
+  };
+
+  const handleDeleteGalleryItem = async (id) => {
+    if (String(id).startsWith('top-') || String(id).startsWith('pol-')) return;
+    if (!window.confirm('Bạn có chắc muốn xóa ảnh này?')) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/gallery/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Không thể xóa');
+      setGalleryPhotos(galleryPhotos.filter(p => p.id !== id));
+      setIsEditPolaroidModalOpen(false);
+      setIsEditTopModalOpen(false);
+    } catch (err) {
+      alert('Lỗi xóa: ' + err.message);
+    }
+  };
+
   const [selectedCategory, setSelectedCategory] = React.useState('Tất cả');
+  const [loading, setLoading] = React.useState(true);
+  
   const [activeTopIndex, setActiveTopIndex] = React.useState(0);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = React.useState(false);
+  const [newMoment, setNewMoment] = React.useState({ title: '', category: 'Tập huấn', image: '', detail: '' });
   
-  // Custom moment contribution form
-  const [newMoment, setNewMoment] = React.useState({ title: '', category: 'Tiếp sức', detail: '', image: '' });
-  const [momentsList, setMomentsList] = React.useState(initialMoments);
-
-  // Photo wall drag ref
   const wallRef = React.useRef(null);
-  const dragRef = React.useRef({ isDown: false, startX: 0, scrollLeft: 0 });
+  const [isDown, setIsDown] = React.useState(false);
+  const [startX, setStartX] = React.useState(0);
+  const [scrollLeft, setScrollLeft] = React.useState(0);
 
   const handleMouseDown = (e) => {
-    dragRef.current.isDown = true;
-    dragRef.current.startX = e.pageX - wallRef.current.offsetLeft;
-    dragRef.current.scrollLeft = wallRef.current.scrollLeft;
+    setIsDown(true);
+    setStartX(e.pageX - wallRef.current.offsetLeft);
+    setScrollLeft(wallRef.current.scrollLeft);
   };
-
   const handleMouseLeave = () => {
-    dragRef.current.isDown = false;
+    setIsDown(false);
   };
-
   const handleMouseUp = () => {
-    dragRef.current.isDown = false;
+    setIsDown(false);
   };
-
   const handleMouseMove = (e) => {
-    if (!dragRef.current.isDown) return;
+    if (!isDown) return;
     e.preventDefault();
     const x = e.pageX - wallRef.current.offsetLeft;
-    const walk = (x - dragRef.current.startX) * 1.5;
-    wallRef.current.scrollLeft = dragRef.current.scrollLeft - walk;
+    const walk = (x - startX) * 2;
+    wallRef.current.scrollLeft = scrollLeft - walk;
   };
-
-  const filteredMoments = momentsList.filter((m) => 
-    selectedCategory === 'Tất cả' || m.category === selectedCategory
-  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newMoment.title || !newMoment.detail) return;
     
-    const imagePlaceholder = newMoment.image || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80';
-    const momentToAdd = {
-      id: Date.now(),
-      title: newMoment.title,
-      category: newMoment.category,
-      detail: newMoment.detail,
-      image: imagePlaceholder,
-    };
-    
-    setMomentsList([momentToAdd, ...momentsList]);
-    setNewMoment({ title: '', category: 'Tiếp sức', detail: '', image: '' });
-    setIsSubmitModalOpen(false);
-    alert('Cảm ơn bạn đã đóng góp khoảnh khắc ý nghĩa này!');
+    const token = localStorage.getItem('token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    fetch('http://localhost:8080/api/gallery', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        title: newMoment.title,
+        detail: newMoment.detail,
+        category: newMoment.category,
+        imageUrl: newMoment.image || 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=80',
+        displayOrder: galleryPhotos.length + 1
+      })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Không thể lưu khoảnh khắc');
+        return res.json();
+      })
+      .then((data) => {
+        alert('Gửi khoảnh khắc thành công!');
+        setGalleryPhotos([data, ...galleryPhotos]);
+        setIsSubmitModalOpen(false);
+        setNewMoment({ title: '', category: 'Tập huấn', image: '', detail: '' });
+      })
+      .catch(err => {
+        alert('Lỗi: ' + err.message);
+      });
   };
+
+  // Gọi API lấy ảnh thư viện
+  React.useEffect(() => {
+    fetch('http://localhost:8080/api/gallery')
+      .then((res) => {
+        if (!res.ok) throw new Error('Không thể tải ảnh thư viện');
+        return res.json();
+      })
+      .then((data) => {
+        setGalleryPhotos(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Lỗi API lấy thư viện ảnh:', err);
+        setLoading(false);
+      });
+  }, []);
+  // Lọc ảnh theo category
+  const filteredPhotos = galleryPhotos.filter(photo => {
+    if (photo.category === 'Top Moment' || photo.category === 'Polaroid') return false;
+    if (selectedCategory === 'Tất cả') return true;
+    return photo.category === selectedCategory;
+  });
+
+
+
+  const dbTopMoments = galleryPhotos.filter(p => p.category === 'Top Moment').sort((a,b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  const dbPolaroids = galleryPhotos.filter(p => p.category === 'Polaroid').sort((a,b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  const topMoments = defaultTopMoments.map((defItem, idx) => {
+    const found = dbTopMoments.find(p => p.displayOrder === idx + 1);
+    return found || defItem;
+  });
+  const activePolaroids = dbPolaroids.length > 0 ? dbPolaroids : defaultPolaroids;
 
   return (
     <div className="w-full text-on-surface font-body-md overflow-x-hidden selection:bg-primary/20">
@@ -185,7 +262,7 @@ export default function MomentsScreen({ onNavigate }) {
 
         {/* Masonry Grid Gallery */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredMoments.map((moment) => (
+          {filteredPhotos.map((moment) => (
             <div
               key={moment.id}
               className={`group relative overflow-hidden rounded-3xl glass-card transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_40px_80px_rgba(0,136,255,0.15)] ${
@@ -196,7 +273,7 @@ export default function MomentsScreen({ onNavigate }) {
                 <img
                   alt={moment.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  src={moment.image}
+                  src={moment.imageUrl}
                 />
               </div>
               <div className="p-8 space-y-3 bg-white/90 backdrop-blur-md">
@@ -224,7 +301,7 @@ export default function MomentsScreen({ onNavigate }) {
                 <img
                   alt="Top Moment"
                   className="w-full h-full object-cover transition-all duration-700"
-                  src={topMoments[activeTopIndex].image}
+                  src={topMoments[activeTopIndex]?.imageUrl}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
                   <button className="bg-white/20 backdrop-blur-md text-white p-4 rounded-full hover:bg-white/40 transition-all">
@@ -244,11 +321,23 @@ export default function MomentsScreen({ onNavigate }) {
                 >
                   <span className={`font-display-lg text-[48px] font-extrabold transition-colors ${
                     activeTopIndex === idx ? 'text-primary' : 'text-primary/20 group-hover:text-primary'
-                  }`}>{item.id}</span>
-                  <div className="space-y-2">
+                  }`}>{idx + 1}</span>
+                  <div className="space-y-2 flex-1">
                     <h4 className="font-headline-md text-lg font-bold">{item.title}</h4>
                     <p className="font-body-md text-sm text-on-surface-variant">{item.detail}</p>
                   </div>
+                  {isAdmin && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditTopData({ ...item, displayOrder: item.displayOrder || idx + 1 });
+                        setIsEditTopModalOpen(true);
+                      }}
+                      className="ml-auto bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors flex-shrink-0"
+                    >
+                      <span className="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                  )}
                 </div>
               ))}
               <button
@@ -277,19 +366,44 @@ export default function MomentsScreen({ onNavigate }) {
           className="relative h-[400px] overflow-x-auto cursor-grab active:cursor-grabbing overflow-y-hidden perspective-1000 no-scrollbar select-none"
         >
           <div className="absolute flex gap-8 items-center px-24 py-10" style={{ width: '1800px' }}>
-            {polaroids.map((p, idx) => (
+            {activePolaroids.map((p, idx) => (
               <div
-                key={idx}
-                className={`w-64 h-80 bg-white p-3 shadow-xl ${p.rotation} ${p.margin || ''} rotate-x-hover flex-shrink-0 border border-outline-variant`}
+                key={p.id || idx}
+                className={`relative w-64 h-80 bg-white p-3 shadow-xl ${p.detail || 'rotate-0'} rotate-x-hover flex-shrink-0 border border-outline-variant`}
               >
                 <img
                   className="w-full h-60 object-cover grayscale hover:grayscale-0 transition-all pointer-events-none"
-                  alt={p.location}
-                  src={p.image}
+                  alt={p.title}
+                  src={p.imageUrl}
                 />
-                <div className="pt-4 text-center font-body-md italic text-on-surface-variant text-xs">{p.location}</div>
+                <div className="pt-4 text-center font-body-md italic text-on-surface-variant text-xs">{p.title}</div>
+                {isAdmin && (
+                  <button
+                    onClick={() => {
+                      setEditPolaroidData({ ...p, displayOrder: p.displayOrder || idx + 1 });
+                      setIsEditPolaroidModalOpen(true);
+                    }}
+                    className="absolute top-4 right-4 bg-white/80 backdrop-blur text-primary p-2 rounded-full shadow-lg hover:bg-primary hover:text-white transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-xs">edit</span>
+                  </button>
+                )}
               </div>
             ))}
+            {isAdmin && (
+              <div
+                onClick={() => {
+                  setEditPolaroidData({ title: '', detail: 'rotate-0', imageUrl: '', displayOrder: activePolaroids.length + 1 });
+                  setIsEditPolaroidModalOpen(true);
+                }}
+                className="w-64 h-80 flex items-center justify-center border-2 border-dashed border-primary/50 bg-white/50 cursor-pointer rounded-xl hover:bg-white transition-colors flex-shrink-0"
+              >
+                <div className="flex flex-col items-center text-primary">
+                  <span className="material-symbols-outlined text-4xl">add_photo_alternate</span>
+                  <span className="font-bold mt-2">Thêm kỷ niệm</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-12 text-center">
@@ -392,6 +506,96 @@ export default function MomentsScreen({ onNavigate }) {
           </div>
         </div>
       </section>
+
+      {/* Edit Top Moment Modal */}
+      {isEditTopModalOpen && editTopData && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full glass-card border border-white/40 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-headline-md text-xl font-bold text-primary">Sửa Top Khoảnh Khắc</h3>
+              <button onClick={() => setIsEditTopModalOpen(false)} className="p-1 hover:bg-surface-container rounded-full"><span className="material-symbols-outlined">close</span></button>
+            </div>
+            <form onSubmit={(e) => handleSaveGalleryItem(e, editTopData, 'Top Moment')} className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold mb-1">Tiêu đề</label>
+                <input required type="text" value={editTopData.title} onChange={e => setEditTopData({...editTopData, title: e.target.value})} className="w-full px-4 py-2 border rounded-xl" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">Mô tả chi tiết</label>
+                <textarea required rows="3" value={editTopData.detail} onChange={e => setEditTopData({...editTopData, detail: e.target.value})} className="w-full px-4 py-2 border rounded-xl" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">Hình ảnh (Đường dẫn hoặc tải lên)</label>
+                {editTopData.imageUrl && <img src={editTopData.imageUrl} alt="preview" className="w-full h-32 object-cover rounded-xl mb-2" />}
+                <div className="flex gap-2 items-center">
+                  <input 
+                    type="url" 
+                    placeholder="https://..." 
+                    value={editTopData.imageUrl || ''} 
+                    onChange={e => setEditTopData({...editTopData, imageUrl: e.target.value})} 
+                    className="flex-1 px-4 py-2 border rounded-xl"
+                  />
+                  <label className="cursor-pointer bg-primary/10 text-primary px-4 py-2 rounded-xl font-bold text-sm inline-block hover:bg-primary/20 whitespace-nowrap">
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, url => setEditTopData({...editTopData, imageUrl: url}))} />
+                    Tải ảnh lên
+                  </label>
+                </div>
+              </div>
+              <div className="flex gap-2 pt-4">
+                <button type="button" onClick={() => setIsEditTopModalOpen(false)} className="flex-1 py-3 bg-surface border text-on-surface rounded-xl font-bold">Hủy</button>
+                <button type="submit" className="flex-1 py-3 bg-primary text-white rounded-xl font-bold">Lưu thay đổi</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Polaroid Modal */}
+      {isEditPolaroidModalOpen && editPolaroidData && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full glass-card border border-white/40 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-headline-md text-xl font-bold text-primary">{editPolaroidData.id && !String(editPolaroidData.id).startsWith('pol-') ? 'Sửa Kỷ Niệm' : 'Thêm Kỷ Niệm'}</h3>
+              <button onClick={() => setIsEditPolaroidModalOpen(false)} className="p-1 hover:bg-surface-container rounded-full"><span className="material-symbols-outlined">close</span></button>
+            </div>
+            <form onSubmit={(e) => handleSaveGalleryItem(e, editPolaroidData, 'Polaroid')} className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold mb-1">Địa điểm (Tiêu đề)</label>
+                <input required type="text" value={editPolaroidData.title} onChange={e => setEditPolaroidData({...editPolaroidData, title: e.target.value})} className="w-full px-4 py-2 border rounded-xl" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">Góc xoay (rotate-X hoặc -rotate-X)</label>
+                <input required type="text" value={editPolaroidData.detail} onChange={e => setEditPolaroidData({...editPolaroidData, detail: e.target.value})} className="w-full px-4 py-2 border rounded-xl" placeholder="vd: rotate-2, -rotate-3" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">Hình ảnh (Đường dẫn hoặc tải lên)</label>
+                {editPolaroidData.imageUrl && <img src={editPolaroidData.imageUrl} alt="preview" className="w-full h-32 object-cover rounded-xl mb-2" />}
+                <div className="flex gap-2 items-center">
+                  <input 
+                    type="url" 
+                    placeholder="https://..." 
+                    value={editPolaroidData.imageUrl || ''} 
+                    onChange={e => setEditPolaroidData({...editPolaroidData, imageUrl: e.target.value})} 
+                    className="flex-1 px-4 py-2 border rounded-xl"
+                  />
+                  <label className="cursor-pointer bg-primary/10 text-primary px-4 py-2 rounded-xl font-bold text-sm inline-block hover:bg-primary/20 whitespace-nowrap">
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, url => setEditPolaroidData({...editPolaroidData, imageUrl: url}))} />
+                    Tải ảnh lên
+                  </label>
+                </div>
+              </div>
+              <div className="flex gap-2 pt-4">
+                {editPolaroidData.id && !String(editPolaroidData.id).startsWith('pol-') && (
+                  <button type="button" onClick={() => handleDeleteGalleryItem(editPolaroidData.id)} className="px-4 bg-error/10 text-error rounded-xl font-bold hover:bg-error/20"><span className="material-symbols-outlined">delete</span></button>
+                )}
+                <button type="button" onClick={() => setIsEditPolaroidModalOpen(false)} className="flex-1 py-3 bg-surface border text-on-surface rounded-xl font-bold">Hủy</button>
+                <button type="submit" className="flex-1 py-3 bg-primary text-white rounded-xl font-bold">Lưu thay đổi</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

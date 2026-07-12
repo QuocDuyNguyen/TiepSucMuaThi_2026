@@ -1,9 +1,42 @@
 import React from 'react';
-import { volunteers } from '../data/volunteers.js';
 
 export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
-  const member = volunteers.find((v) => v.id === selectedMemberId) || volunteers[0];
+  const [member, setMember] = React.useState(null);
+  const [gratitudes, setGratitudes] = React.useState([]);
+  const [memories, setMemories] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  
+  React.useEffect(() => {
+    setLoading(true);
 
+    const fetchMemberDetails = fetch(`http://localhost:8080/api/volunteers?t=${Date.now()}`)
+    .then(res => {
+      if(!res.ok) throw new Error('Không thể tải danh sách.');
+      return res.json();
+    })
+    .then(list =>{
+      const found = list.find( v => v.id == selectedMemberId);
+      if(!found) throw new Error('Không tìm thấy thành viên.');
+      setMember(found);
+    });
+
+    const fetchMemories = fetch(`http://localhost:8080/api/volunteers/${selectedMemberId}/memories?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setMemories(Array.isArray(data) ? data : []));
+
+    const fetchGratitudes = fetch(`http://localhost:8080/api/volunteers/${selectedMemberId}/gratitudes?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setGratitudes(Array.isArray(data) ? data : []));
+    Promise.all([fetchMemberDetails, fetchMemories, fetchGratitudes])
+      .then(() => setLoading(false))
+      .catch((err) => {
+        console.error('Lỗi khi tải thông tin chi tiết thành viên:', err);
+        setLoading(false);
+      });
+  }, [selectedMemberId]);
+
+  const teammateMessages = gratitudes.filter(g => g.verified === true);
+  const studentGratitudes = gratitudes.filter(g => g.verified === false);
   const getInitials = (fullName) => {
     if (!fullName) return '';
     const parts = fullName.split(' ');
@@ -12,8 +45,15 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
     }
     return fullName.substring(0, 2).toUpperCase();
   };
+  if (loading || !member) {
+    return (
+      <div className="w-full text-center py-40 text-on-surface-variant italic">
+        Đang tải thông tin hồ sơ chiến sĩ...
+      </div>
+    );
+  }
 
-  return (
+    return (
     <div className="w-full text-on-surface font-body-md overflow-x-hidden pt-24 pb-section-gap">
       <style>{`
         .glass-effect {
@@ -32,12 +72,6 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
         .polaroid:hover {
           transform: rotate(0deg) scale(1.02);
           z-index: 10;
-        }
-        .journal-paper {
-          position: relative;
-          background: linear-gradient(rgba(0, 0, 0, 0) 95%, rgba(0, 136, 255, 0.15) 95%);
-          background-size: 100% 2rem;
-          line-height: 2rem;
         }
       `}</style>
 
@@ -58,9 +92,9 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
           <div className="relative group shrink-0">
             <div className="w-64 h-64 rounded-full overflow-hidden ring-4 ring-primary ring-offset-4 ring-offset-surface">
               <img
-                alt={`${member.name} Profile`}
+                alt={`${member.fullName} Profile`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                src={member.image}
+                src={member.avatarUrl || 'https://res.cloudinary.com/demo/image/upload/d_avatar.png/avatar.png'}
               />
             </div>
             <div className="absolute -bottom-4 right-4 bg-secondary text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg uppercase">
@@ -68,19 +102,19 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
             </div>
           </div>
           <div className="flex-1 text-center md:text-left space-y-4">
-            <h1 className="font-display-lg text-4xl md:text-5xl font-extrabold text-primary">{member.name}</h1>
-            <p className="font-headline-md text-lg md:text-xl text-on-surface-variant">{member.role}</p>
+            <h1 className="font-display-lg text-4xl md:text-5xl font-extrabold text-primary">{member.fullName}</h1>
+            <p className="font-headline-md text-lg md:text-xl text-on-surface-variant">{member.roleName || 'Tình nguyện viên'}</p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
               <div className="glass-effect px-6 py-4 rounded-2xl text-center min-w-[120px] shadow-sm">
-                <span className="block font-headline-md text-2xl font-bold text-primary">{member.hours}</span>
+                <span className="block font-headline-md text-2xl font-bold text-primary">{member.displayOrder * 12 + 24}</span>
                 <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Giờ Tình Nguyện</span>
               </div>
               <div className="glass-effect px-6 py-4 rounded-2xl text-center min-w-[120px] shadow-sm">
-                <span className="block font-headline-md text-2xl font-bold text-secondary">{member.campaigns}</span>
+                <span className="block font-headline-md text-2xl font-bold text-secondary">2</span>
                 <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Chiến dịch</span>
               </div>
               <div className="glass-effect px-6 py-4 rounded-2xl text-center min-w-[120px] shadow-sm">
-                <span className="block font-headline-md text-2xl font-bold text-tertiary">{member.assisted}</span>
+                <span className="block font-headline-md text-2xl font-bold text-tertiary">150+</span>
                 <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Thí sinh hỗ trợ</span>
               </div>
             </div>
@@ -88,56 +122,68 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
         </div>
       </section>
 
-      {/* Lời Nhắn Từ Leader (Featured Letter Card) */}
-      <section className="px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto mb-section-gap">
-        <div className="relative bg-[#fffdfa] p-12 md:p-16 rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.05)] border border-orange-100 rotate-1">
-          <div className="absolute -top-10 -right-10 w-32 h-32 text-primary opacity-10 select-none">
-            <span className="material-symbols-outlined text-[120px]">format_quote</span>
+      {/* Lời Nhắn Từ Đồng Đội */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-section-gap">
+        <div className="text-center mb-10">
+          <h2 className="font-headline-lg text-2xl md:text-3xl font-bold text-primary">Lời Nhắn Từ Đồng Đội</h2>
+          <p className="text-sm text-on-surface-variant mt-2">Những lời nhắn gửi thân thương từ các chiến sĩ Tiếp Sức Mùa Thi 2026</p>
+        </div>
+
+        {teammateMessages.length === 0 ? (
+          <div className="text-center py-12 glass-effect rounded-3xl border border-white/60 text-on-surface-variant italic max-w-3xl mx-auto">
+            Chưa có lời nhắn nào từ đồng đội gửi đến chiến sĩ này. Hãy là người đầu tiên viết lời chúc nhé!
           </div>
-          <div className="flex items-center gap-6 mb-12">
-            <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0">
-              <img
-                alt="Leader Avatar"
-                className="w-full h-full object-cover"
-                src={member.leaderAvatar}
-              />
-            </div>
-            <div>
-              <h3 className="font-headline-md text-xl font-bold text-on-surface">Lời Nhắn Từ Ban Chỉ Huy</h3>
-              <p className="text-sm text-on-surface-variant italic">{member.leaderName} - {member.leaderTitle}</p>
-            </div>
-          </div>
-          <div className="space-y-6 font-body-lg text-md md:text-lg text-on-surface leading-relaxed journal-paper">
-            {member.leaderMessage.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {teammateMessages.map((msg) => (
+              <div key={msg.id} className="glass-effect p-8 rounded-3xl relative border border-white/60 shadow-sm flex flex-col justify-between">
+                <span className="material-symbols-outlined text-primary/10 absolute top-4 right-6 text-4xl select-none">format_quote</span>
+                <p className="font-body-lg text-sm md:text-base mb-6 text-on-surface-variant leading-relaxed italic">
+                  "{msg.content}"
+                </p>
+                <div className="flex items-center gap-3 border-t border-outline-variant/20 pt-4 mt-auto">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                    {getInitials(msg.senderName)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-xs truncate">{msg.senderName}</p>
+                      {msg.senderVerified && (
+                        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/50 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider scale-95 shrink-0">
+                          Đồng đội
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[9px] text-outline mt-0.5">
+                      {new Date(msg.createdAt).toLocaleDateString('vi-VN')}
+                    </p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
-          <div className="mt-12 text-right">
-            <p className="font-handwritten text-4xl text-primary mb-2">{member.leaderSignatureText}</p>
-            <p className="font-bold text-on-surface text-sm">{member.leaderName}</p>
-          </div>
-        </div>
+        )}
       </section>
 
-      {/* Lời Cảm Ơn Gửi Đến Leader / Đồng đội */}
-      {member.gratitudeLetters && member.gratitudeLetters.length > 0 && (
+      {/* Lời Cảm Ơn Gửi Đến Tình Nguyện Viên */}
+      {studentGratitudes.length > 0 && (
         <section className="bg-surface-container-low py-section-gap mb-section-gap">
           <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-            <h2 className="font-headline-lg text-2xl md:text-3xl font-bold text-center mb-16 text-primary">Lời Nhắn Gửi &amp; Tri Ân</h2>
+            <h2 className="font-headline-lg text-2xl md:text-3xl font-bold text-center mb-16 text-primary">Lời Tri Ân từ Thí Sinh &amp; Phụ Huynh</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {member.gratitudeLetters.map((letter, idx) => (
-                <div key={idx} className="glass-effect p-10 rounded-3xl relative border border-white/60">
+              {studentGratitudes.map((letter) => (
+                <div key={letter.id} className="glass-effect p-10 rounded-3xl relative border border-white/60">
                   <span className="material-symbols-outlined text-primary-container absolute top-6 right-8 opacity-20 text-4xl select-none">format_quote</span>
                   <p className="font-body-lg text-md md:text-lg mb-8 italic text-on-surface-variant leading-relaxed">
-                    "{letter.text}"
+                    "{letter.content}"
                   </p>
                   <div className="flex items-center gap-4 border-t border-outline-variant/30 pt-6">
                     <div className="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-sm shrink-0">
-                      {getInitials(letter.sender)}
+                      {getInitials(letter.senderName)}
                     </div>
                     <div>
-                      <p className="font-bold text-sm">{letter.sender}</p>
-                      <p className="text-[10px] text-outline font-bold uppercase">{letter.relation}</p>
+                      <p className="font-bold text-sm">{letter.senderName}</p>
+                      <p className="text-[10px] text-outline font-bold uppercase">Sĩ tử/Phụ huynh</p>
                     </div>
                   </div>
                 </div>
@@ -147,7 +193,7 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
         </section>
       )}
 
-      {/* Khoảnh Khắc Đáng Nhớ (Masonry Journal Style) */}
+      {/* Khoảnh Khắc Đáng Nhớ */}
       <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-section-gap">
         <div className="text-center mb-16">
           <h2 className="font-headline-lg text-3xl font-bold mb-4">Khoảnh Khắc Đáng Nhớ</h2>
@@ -155,41 +201,24 @@ export default function MemberProfileScreen({ onNavigate, selectedMemberId }) {
         </div>
         
         <div className="columns-1 md:columns-2 lg:columns-3 gap-gutter space-y-8">
-          
-          {/* Polaroid Photos */}
-          {member.polaroids && member.polaroids.map((photo, idx) => (
-            <div key={idx} className="break-inside-avoid">
-              <div className={`polaroid ${photo.rotateClass || ''}`}>
+          {memories.map((photo) => (
+            <div key={photo.id} className="break-inside-avoid">
+              <div className="polaroid">
                 <img
-                  alt={photo.caption}
+                  alt={photo.title}
                   className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700 pointer-events-none"
-                  src={photo.src}
+                  src={photo.imageUrl || 'https://placehold.co/600x400?text=TSMT'}
                 />
-                <p className="mt-6 font-handwritten text-2xl text-on-surface-variant text-center">{photo.caption}</p>
+                <p className="mt-6 font-handwritten text-2xl text-on-surface-variant text-center">{photo.title}</p>
               </div>
             </div>
           ))}
 
-          {/* Journal Entry */}
-          {member.journal && (
-            <div className="break-inside-avoid glass-effect p-8 rounded-3xl border border-white/60">
-              <div className="flex items-center gap-2 mb-4 text-primary">
-                <span className="material-symbols-outlined">edit_note</span>
-                <span className="font-bold">Nhật ký trực chiến</span>
-              </div>
-              <p className="text-on-surface-variant text-sm leading-relaxed">
-                {member.journal.text}
-              </p>
-              <p className="mt-4 text-[10px] text-outline font-bold">{member.journal.date}</p>
-            </div>
-          )}
-
-          {/* Quote Card */}
+          {/* Quote Card tĩnh */}
           <div className="break-inside-avoid bg-primary-container p-8 rounded-3xl text-on-primary-container shadow-md">
             <p className="text-2xl font-bold leading-tight mb-4">"Không chỉ là hỗ trợ thi, đây là nơi chúng tôi tìm thấy phiên bản tốt nhất của chính mình."</p>
-            <p className="text-sm font-bold text-on-primary-container/85">— Nhật ký {member.name}</p>
+            <p className="text-sm font-bold text-on-primary-container/85">— Nhật ký {member.fullName}</p>
           </div>
-
         </div>
       </section>
     </div>
