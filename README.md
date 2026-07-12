@@ -160,7 +160,7 @@ git clone https://github.com/your-username/yearbook-tsmt2026.git
 cd backend
 ```
 
-Cấu hình `application.properties` (bạn hãy thay đổi cho phù hợp với máy của mình):
+Cấu hình `application.properties` ( thay đổi cho phù hợp với thiết bị):
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/yearbook_db?createDatabaseIfNotExist=true&useSSL=false
