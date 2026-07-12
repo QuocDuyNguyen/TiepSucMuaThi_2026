@@ -6,8 +6,6 @@
 
 ## Demo
 
-> 🚧 Dự án đang trong quá trình phát triển.
-
 Frontend: http://localhost:5173
 
 Backend API: http://localhost:8080
