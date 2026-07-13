@@ -15,7 +15,7 @@ Backend API: http://localhost:8080
 
 Swagger UI: http://localhost:8080/swagger-ui/index.html
 
-** Tài Khoản Test Chức Năng
+## Tài Khoản Test Chức Năng
 
 Role Admin
 Name: admin        Password: admin123
@@ -32,9 +32,8 @@ Name: volunteer   PassWord: volunteer123
 - JavaScript (ES6+)
 
 ### Backend
-- Java 17+ (hoặc 21)
+- Java 21
 - Spring Boot
-- Spring Security
 - JWT Authentication
 - Spring Data JPA
 - Hibernate
@@ -48,9 +47,7 @@ Name: volunteer   PassWord: volunteer123
 - Local File Upload (`/uploads`)
 
 ### Version Control
-- Git
 - GitHub
-
 ---
 
 ## Features
